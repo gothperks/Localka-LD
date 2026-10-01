@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Loading...</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* =========================================================
+   GMod loading screen. Plain CSS (no variables / gap / grid
+   layout) so it also works in older in-game browsers.
+   ========================================================= */
+
+html, body {
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #00192D;                 /* deep navy */
+  font-family: Bahnschrift, "DIN Alternate", "Segoe UI", Arial, sans-serif;
+}
+
+/* ---------- Scrolling digital grid ---------- */
+.grid {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    -webkit-linear-gradient(rgba(120,200,255,0.10) 2px, transparent 2px),
+    -webkit-linear-gradient(left, rgba(120,200,255,0.10) 2px, transparent 2px);
+  background-image:
+    linear-gradient(rgba(120,200,255,0.10) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(120,200,255,0.10) 2px, transparent 2px);
+  background-size: 84px 84px;          /* grid cell size */
+  -webkit-animation: gridMove 6s linear infinite;
+          animation: gridMove 6s linear infinite;   /* scroll speed */
+}
+@-webkit-keyframes gridMove { from { background-position: 0 0; } to { background-position: 84px 84px; } }
+@keyframes gridMove         { from { background-position: 0 0; } to { background-position: 84px 84px; } }
+
+/* soft vignette so the center stays readable */
+.vignette {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: -webkit-radial-gradient(center, rgba(0,25,45,0) 30%, rgba(0,10,20,0.75) 100%);
+  background: radial-gradient(circle at center, rgba(0,25,45,0) 30%, rgba(0,10,20,0.75) 100%);
+}
+
+/* ---------- Centered block: logo ---------- */
+.center {
+  position: absolute; left: 0; right: 0; top: 48%;
+  -webkit-transform: translateY(-50%); transform: translateY(-50%);
+}
+
+/* ---------- Logo + "- Box" ---------- */
+.logo-row {
+  position: relative;
+  text-align: center; white-space: nowrap;
+}
+
+/* wrapper: keeps logo and text on one common centre line */
+.logo-inner {
+  position: relative;
+  display: inline-block;
+  height: 20vh; min-height: 110px; max-height: 220px;   /* one common height for logo and text */
+  line-height: 20vh;
+  padding: 0 4vh;
+}
+
+.logo-row img {
+  position: relative;
+  height: 20vh; min-height: 110px; max-height: 220px;   /* logo size */
+  vertical-align: middle;
+  -webkit-filter: drop-shadow(3px 4px 3px rgba(0,0,0,0.52)) drop-shadow(0 6px 10px rgba(0,0,0,0.38));
+          filter: drop-shadow(3px 4px 3px rgba(0,0,0,0.52)) drop-shadow(0 6px 10px rgba(0,0,0,0.38));
+}
+
+.logo-row span {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 2vh; word-spacing: -1.1vh;                                   /* gap between logo and text */
+  line-height: 1;
+  font-size: 11vh; font-weight: bold; letter-spacing: 2px;
+  color: rgb(255, 255, 255);                                      /* white / light cyan */
+  text-shadow:
+    2px 3px 0   rgba(0,0,0,0.45),                      /* solid shadow right under the letters */
+    0   6px 10px rgba(0,0,0,0.38);                     /* soft spread */
+}
+
+/* ---------- Rotating tips ---------- */
+.tip {
+  position: absolute; left: 0; right: 0; bottom: 14%;
+  text-align: center; padding: 0 5%;
+  font-size: 2.6vh; min-height: 3vh;
+  color: #ffffff;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.6);
+  opacity: 0;
+  -webkit-transition: opacity 0.6s; transition: opacity 0.6s;
+}
+.tip.show { opacity: 1; }
+
+@media (max-width: 600px) {
+  .logo-row span { font-size: 8vh; margin-left: 1.4vh; word-spacing: -0.8vh; }
+  .tip { font-size: 2.2vh; }
+}
+</style>
+</head>
+<body>
+
+<div class="grid"></div>
+<div class="vignette"></div>
+
+<!-- Change the logo path in src below -->
+<div class="center">
+<div class="logo-row">
+  <div class="logo-inner">
+    <img src="logo.png" alt=""><span>- Box</span>
+  </div>
+</div>
+
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+// ---------- TIPS: add or remove lines here ----------
+var TIPS = [
+  "Join the Discord gang!",
+  "You can read the rules in !motd"
+];
+var TIP_INTERVAL = 5000;   // ms each tip stays on screen
+
+var el = document.getElementById("tip");
+var i = 0;
+
+function showTip() {
+  el.className = "tip";                    // fade out
+  setTimeout(function () {
+    el.innerHTML = TIPS[i];                // swap text while hidden
+    el.className = "tip show";             // fade in
+    i = (i + 1) % TIPS.length;
+  }, 600);
+}
+
+showTip();
+setInterval(showTip, TIP_INTERVAL);
+</script>
+</body>
+</html>
